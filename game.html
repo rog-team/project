@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)https://editor.p5js.org/namonarayana.nn/present/Ab0t8t3PC -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="./game_files/p5.js.download"></script>
+    <script src="./game_files/p5.sound.min.js.download"></script>
+    
+    
+<script src="./game_files/836bea59-576e-41d0-ad67-a8de7ca9bcef.js.download"></script>
+        <script src="./game_files/4c164985-7104-497d-8346-1eb0ccca075b.js.download"></script>
+  <!--<base href="https://editor.p5js.org/namonarayana.nn/present/Ab0t8t3PC/">--><base href="."><style>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+</style></head>
+  <body>
+    <script>var path,boy,cash,diamonds,jwellery,sword,end;
+var pathImg,boyImg,cashImg,diamondsImg,jwelleryImg,swordImg,endImg;
+var treasureCollection = 0;
+
+var cashG,diamondsG,jwelleryG,swordGroup;
+
+var PLAY=1;
+var END=0;
+var gameState=1;
+
+function preload(){
+  pathImg = loadImage("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/6d6b90d1-ca20-422f-a444-b725e8c1fdcf.png");
+  boyImg = loadAnimation("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/e8f40f60-05bd-4d0e-8682-31f94e293930.png","https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/22a7eaa7-d5ed-4b9d-ae72-b158928b78f8.png");
+  cashImg = loadImage("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/b2dd9e00-3206-4c38-a094-449ca47495b3.png");
+  diamondsImg = loadImage("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/ea1228de-222d-4fe3-b6e4-bd2d9adf074e.png");
+  jwelleryImg = loadImage("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/120c14ff-a35f-4c7b-9dcf-6fc7c46d5cf2.png");
+  swordImg = loadImage("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/a9b7def2-891d-4af0-ac94-058e21097203.png");
+  endImg =loadImage("https://assets.editor.p5js.org/5f915ea4ea502d0024fc2a09/40bcc38a-2e3d-4005-8cec-6f3a61f00486.png");
+}
+
+function setup(){
+  
+  createCanvas(400,400);
+       
+ // Moving background
+path=createSprite(200,200);
+path.addImage(pathImg);
+path.velocityY = 4;
+  
+//creating boy running
+boy = createSprite(70,330,20,20);
+boy.addAnimation("SahilRunning",boyImg);
+boy.scale=0.08;
+      
+cashG=new Group();
+diamondsG=new Group();
+jwelleryG=new Group();
+swordGroup=new Group();
+
+}
+
+function draw() {
+
+  background(0);
+  boy.x = World.mouseX;
+  
+  edges= createEdgeSprites();
+  boy.collide(edges);
+  
+  //code to reset the background
+  if(path.y > 400 ){
+    path.y = height/2;
+  }
+  
+    createCash();
+    createDiamonds();
+    createJwellery();
+    createSword();   
+  
+  if (gameState===END){
+    
+        cashG.setVelocityYEach(0);
+        diamondsG.setVelocityYEach(0);  
+        jwelleryG.setVelocityYEach(0); 
+        swordGroup.setVelocityEach(0);
+        
+    
+        cashG.destroyEach();
+        diamondsG.destroyEach();
+        jwelleryG.destroyEach();
+        swordGroup.destroyEach();
+    
+      }
+  
+    
+    if (cashG.isTouching(boy)) {
+      cashG.destroyEach();
+      treasureCollection=treasureCollection+50;
+    }
+    else if (diamondsG.isTouching(boy)) {
+      diamondsG.destroyEach();
+      treasureCollection=treasureCollection+50;
+      
+    }else if(jwelleryG.isTouching(boy)) {
+      jwelleryG.destroyEach();
+      treasureCollection=treasureCollection+50;
+      
+    }else{
+      if(swordGroup.isTouching(boy)) {
+        swordGroup.destroyEach();
+        
+        gameState=END;
+                
+        end = createSprite(200,200,10,10);
+       
+        end.addAnimation("end",endImg);
+        end.scale=0.5;
+        
+        boy.destroy();
+        
+             
+        path.velocityY=0;
+        
+      }
+      
+        }
+
+  drawSprites();
+  textSize(20);
+  text("TreasureValue: "+ treasureCollection,150,30);
+  
+}
+
+function createCash() {
+  if (World.frameCount % 50 == 0) {
+  var cash = createSprite(Math.round(random(50, 350),40, 10, 10));
+  cash.addImage(cashImg);
+  cash.scale=0.12;
+  cash.velocityY = 3;
+  cash.lifetime = 150;
+  cashG.add(cash);
+  }
+}
+
+function createDiamonds() {
+  if (World.frameCount % 80 == 0) {
+  var diamonds = createSprite(Math.round(random(50, 350),40, 10, 10));
+  diamonds.addImage(diamondsImg);
+  diamonds.scale=0.03;
+  diamonds.velocityY = 3;
+  diamonds.lifetime = 150;
+  diamondsG.add(diamonds);
+}
+}
+
+function createJwellery() {
+  if (World.frameCount % 80 == 0) {
+  var jwellery = createSprite(Math.round(random(50, 350),40, 10, 10));
+  jwellery.addImage(jwelleryImg);
+  jwellery.scale=0.13;
+  jwellery.velocityY = 3;
+  jwellery.lifetime = 150;
+  jwelleryG.add(jwellery);
+  }
+}
+
+function createSword(){
+  if (World.frameCount % 150 == 0) {
+  var sword = createSprite(Math.round(random(50, 350),40, 10, 10));
+  sword.addImage(swordImg);
+  sword.scale=0.1;
+  sword.velocityY = 3;
+  sword.lifetime = 150;
+  swordGroup.add(sword);
+  }
+}</script>
+  
+
+<div id="p5_loading" style="position: absolute;">Loading...</div></body></html>
